@@ -1,0 +1,17 @@
+{
+  "name": "rtklib-pos2csv",
+  "version": "1.0",
+  "description": "This is a node script to convert your events.pos to csv",
+  "main": "index.js",
+  "repository": "git@github.com-aeromosaico:aeromosaico/rtklib-pos2csv.git",
+  "author": "aeromosaico",
+  "license": "Apache-2.0",
+  "private": false,
+  "dependencies": {
+    "dayjs": "^1.11.1",
+    "process": "^0.11.10"
+  },
+  "devDependencies": {
+    "prettier": "2.6.2"
+  }
+}
