@@ -7,6 +7,9 @@
   "author": "aeromosaico",
   "license": "Apache-2.0",
   "private": false,
+  "scripts": {
+    "pos2csv": "node index.js"
+  },
   "dependencies": {
     "dayjs": "^1.11.1",
     "exifr": "^7.1.3",

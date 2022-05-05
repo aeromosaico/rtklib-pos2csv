@@ -89,7 +89,7 @@ const arr2csv = (events, pics) => {
       );
   }
   // check if the range of first and last is more than 2s (1 for less and 1 for more)
-  fs.writeFileSync("ppk.txt", str);
+  fs.writeFileSync("ppk.csv", str);
 };
 
 (async (posFile, picsPath) => {
