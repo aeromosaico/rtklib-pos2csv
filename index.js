@@ -52,7 +52,7 @@ const getPics = async (picsPath) => {
     }
     return pics;
   } catch (e) {
-    return console.log(e);
+    return console.error(e);
   }
 };
 
@@ -60,14 +60,16 @@ const arr2csv = (events, pics) => {
   let str = "name,lat,lon,height,sdn,sde,sdu\n";
   // store temp previous difference time from event and pic and if is less or equal 1 seconds return error
   let arrDiffTime = [];
+  console.log("event_timestamp, picture_timestamp, difference_between");
   for (let i = 0; i < events.length; i++) {
     const eventTime = events[i][0];
     const picTime = pics[i][1];
     const diffTime = Math.abs(eventTime.diff(picTime));
-    console.log(eventTime["$d"], picTime, diffTime);
     arrDiffTime.push(diffTime);
     const average = arrDiffTime.reduce((a, b) => a + b, 0) / arrDiffTime.length;
-    if (diffTime >= average - 1000 && diffTime <= average + 1000)
+    // checks if pics and events difference is +- 1000 ms
+    if (diffTime >= average - 1000 && diffTime <= average + 1000) {
+      console.log(eventTime["$d"], ",", picTime, ",", diffTime, "✅");
       str +=
         pics[i][0] +
         "," +
@@ -83,13 +85,14 @@ const arr2csv = (events, pics) => {
         "," +
         events[i][6] +
         "\n";
-    else
+    } else {
+      console.error(eventTime["$d"], picTime, diffTime, "❌");
       return console.error(
-        `${pics[i][0]} and event time row ${i} doesnt match, consider to shift`
+        `${pics[i][0]} and event on row ${i} doesnt match, consider to shift`
       );
+    }
   }
-  // check if the range of first and last is more than 2s (1 for less and 1 for more)
-  fs.writeFileSync("ppk.csv", str);
+  fs.writeFileSync(`${argv[2]}.ppk.csv`, str);
 };
 
 (async (posFile, picsPath) => {
@@ -98,9 +101,17 @@ const arr2csv = (events, pics) => {
     const pics = await getPics(picsPath);
     arr2csv(events, pics);
     if (events.length > pics.length)
-      console.warn("too many events | identify the error and try again");
+      console.error(
+        `There is ${
+          events.length - pics.length
+        } more events than pictures, consider to delete events`
+      );
     if (events.length < pics.length)
-      console.warn("missing events | identify the error and try again");
+      console.error(
+        `There is ${
+          pics.length - events.length
+        } more pictures than events, consider to delete pictures`
+      );
   } catch (e) {
     return console.error(e);
   }
